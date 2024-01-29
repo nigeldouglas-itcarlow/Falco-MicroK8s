@@ -13,6 +13,14 @@ Accessing the FalcoSideKick user interface
 ```
 kubectl port-forward svc/falco-falcosidekick-ui -n falco 2802 --insecure-skip-tls-verify
 ```
+```
+sudo usermod -a -G microk8s $USER
+sudo chown -f -R $USER ~/.kube
+```
+You will also need to re-enter the session for the group update to take place:
+```
+su - $USER
+```
 Will probably set up the alias at the start of each sesson:
 ```
 alias kubectl='microk8s kubectl'
