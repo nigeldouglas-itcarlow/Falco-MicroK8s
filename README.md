@@ -13,3 +13,7 @@ Accessing the FalcoSideKick user interface
 ```
 kubectl port-forward svc/falco-falcosidekick-ui -n falco 2802 --insecure-skip-tls-verify
 ```
+Will probably set up the alias at the start of each sesson:
+```
+alias kubectl='microk8s kubectl'
+```
