@@ -54,8 +54,8 @@ wget https://raw.githubusercontent.com/jasonumiker-sysdig/kubernetes-security-de
 AGENT_SERVICE_CLUSTERIP=$(kubectl get service falco-k8saudit-webhook -o=jsonpath={.spec.clusterIP} -n falco) envsubst < webhook-config.yaml.in > webhook-config.yaml
 ```
 ```
-cp ./webhook-config.yaml /var/snap/microk8s/common/var/lib/k8s_audit
-cp ./audit-policy.yaml /var/snap/microk8s/common/var/lib/k8s_audit
+cp ./webhook-config.yaml /var/snap/microk8s/common/var/lib/k8s_audit/
+cp ./audit-policy.yaml /var/snap/microk8s/common/var/lib/k8s_audit/
 cat /var/snap/microk8s/current/args/kube-apiserver > kube-apiserver
 ```
 ```
