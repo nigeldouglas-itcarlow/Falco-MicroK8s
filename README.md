@@ -46,6 +46,11 @@ tar -xvf xmrig-6.16.4-linux-static-x64.tar.gz
 mkdir /var/snap/microk8s/common/var/lib/k8s_audit
 ```
 ```
+wget https://raw.githubusercontent.com/jasonumiker-sysdig/kubernetes-security-demos/cc2ebd3e56a2eac0a9a20668dfb91b30af0f9e00/setup-cluster/audit-policy.yaml
+wget https://raw.githubusercontent.com/jasonumiker-sysdig/kubernetes-security-demos/cc2ebd3e56a2eac0a9a20668dfb91b30af0f9e00/setup-cluster/webhook-config.yaml.in
+wget https://raw.githubusercontent.com/jasonumiker-sysdig/kubernetes-security-demos/cc2ebd3e56a2eac0a9a20668dfb91b30af0f9e00/setup-cluster/falco-values.yaml
+```
+```
 AGENT_SERVICE_CLUSTERIP=$(kubectl get service falco-k8saudit-webhook -o=jsonpath={.spec.clusterIP} -n falco) envsubst < webhook-config.yaml.in > webhook-config.yaml
 ```
 ```
