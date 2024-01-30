@@ -109,3 +109,14 @@ Remember to configure the ```IP address``` of the ```K8saudit webhook service```
 ```
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
+
+# K01 - Insecure Workload Configuration
+
+Privileged Pod (K01.01)
+```
+kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/dodgy-pod.yaml
+```
+Run as Root User (K01.03)
+```
+kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/RunAsRoot.yaml
+```
