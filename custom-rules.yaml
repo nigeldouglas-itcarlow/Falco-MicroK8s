@@ -1,0 +1,72 @@
+customRules:
+  custom-rules.yaml: |-
+    - rule: Outbound Connection to C2 Servers
+      desc: Detect outbound connection to command & control servers thanks to a list of IP addresses & a list of FQDN.
+      condition: outbound and fd.sip in (c2_server_ip_list)
+      output: Outbound connection to C2 server (c2_domain=%fd.sip.name c2_addr=%fd.sip c2_port=%fd.sport command=%proc.cmdline connection=%fd.name user=%user.name user_loginuid=%user.loginuid container_id=%container.id image=%container.image.repository)
+      priority: WARNING
+      tags: [host, container, network, mitre_command_and_control, TA0011]
+
+    - macro: outbound
+      condition: >
+        (((evt.type = connect and evt.dir=<) or
+          (evt.type in (sendto,sendmsg) and evt.dir=< and
+          fd.l4proto != tcp and fd.connected=false and fd.name_changed=true)) and
+        (fd.typechar = 4 or fd.typechar = 6) and
+        (fd.ip != "0.0.0.0" and fd.net != "127.0.0.0/8" and not fd.snet in (rfc_1918_addresses)) and
+        (evt.rawres >= 0 or evt.res = EINPROGRESS))
+
+    - macro: proc_name_exists
+      condition: (proc.name!="<NA>" and proc.name!="" and proc.name exists)
+
+    - list: c2_server_ip_list
+      items:
+        - "'52.21.188.179'"
+        - "'54.237.103.220'"
+
+    - list: rfc_1918_addresses
+      items: ['"10.0.0.0/8"', '"172.16.0.0/12"', '"192.168.0.0/16"']
+
+    - list: falco_containers
+      items: ["docker.io/issif/falco-talon"]
+
+    - list: white_listed_modules
+      items: []
+
+    # Disabling noisy Falco rules
+    - rule: Drop and execute new binary in container
+      enabled: false
+
+    - rule: Change thread namespace
+      enabled: false
+
+    # Disabling rules with weak tagging
+    - rule: Create Privileged Pod
+      enabled: false
+
+    # Enabling rules with OWASP T10 Context
+    - rule: Privileged Pod Created
+      desc: Detect an attempt to start a pod with a privileged container
+      condition: kevt and pod and kcreate and ka.req.pod.containers.privileged intersects (true) and not ka.req.pod.containers.image.repository in (falco_privileged_images)
+      output: Pod started with privileged container (user=%ka.user.name pod=%ka.resp.name resource=%ka.target.resource ns=%ka.target.namespace images=%ka.req.pod.containers.image)
+      priority: WARNING
+      source: k8s_audit
+      tags: [OWASP_K8S_T10, K01, insecure_workload_config, K01.03]
+
+    # https://github.com/falcosecurity/rules/blob/main/rules/falco-sandbox_rules.yaml#L1598,L1612
+    - rule: Container Run as Root User
+      desc: Container detected running as the root user. This should be taken into account especially when policies disallow containers from running with root user privileges.
+      condition: spawned_process and container and proc.vpid=1 and user.uid=0 and not user_known_run_as_root_container
+      enabled: true
+      output: Container launched with root user privilege (evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
+      priority: INFO
+      tags: [OWASP_K8S_T10, K01, insecure_workload_config, K01.01]
+
+    # https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/
+    #- rule: Pod created without resource limits
+    #  desc: Detect pod created without defined CPU or memory limits
+    # condition: kevt and pod and kcreate and ka.req.pod.containers.resources.limits.cpu != exists
+    # output: Pod started without CPU or memory limits (user=%ka.user.name pod=%ka.resp.name resource=%ka.target.resource ns=%ka.target.namespace images=%ka.req.pod.containers.image)
+    # priority: WARNING
+    # source: k8s_audit
+    # tags: [OWASP_K8s_T10, K01, insecure_workload_config, K01.04, proposed_control]
