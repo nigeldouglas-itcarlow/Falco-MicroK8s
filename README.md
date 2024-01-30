@@ -89,6 +89,8 @@ kubectl rollout status daemonset falco -n falco --timeout 300s
 ```
 wget https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/falco-talon/custom-rules.yaml
 ```
+
+K8sAudit disabled - using custom-rules.yaml
 ```
 helm upgrade falco falcosecurity/falco --namespace falco \
   --create-namespace \
@@ -96,4 +98,9 @@ helm upgrade falco falcosecurity/falco --namespace falco \
   --set falcosidekick.enabled=true \
   --set falcosidekick.webui.enabled=true \
   -f custom-rules.yaml
+```
+
+K8sAudit enabled - without custom-rules.yaml
+```
+helm install falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443
 ```
