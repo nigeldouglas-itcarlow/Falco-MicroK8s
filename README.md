@@ -90,7 +90,7 @@ kubectl rollout status daemonset falco -n falco --timeout 300s
 wget https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/falco-talon/custom-rules.yaml
 ```
 
-K8sAudit disabled - using custom-rules.yaml
+- K8sAudit DISABLED
 ```
 helm upgrade falco falcosecurity/falco --namespace falco \
   --create-namespace \
@@ -100,7 +100,12 @@ helm upgrade falco falcosecurity/falco --namespace falco \
   -f custom-rules.yaml
 ```
 
-K8sAudit enabled - without custom-rules.yaml
+- K8sAudit ENABLED
 ```
-helm install falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443
+helm upgrade falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443 --set tty=true -f custom-rules.yaml
+```
+
+Remember to configure the ```IP address``` of the ```K8saudit webhook service``` in the ```webhook-config.yaml``` file:
+```
+sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
