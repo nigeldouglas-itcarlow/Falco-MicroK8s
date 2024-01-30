@@ -110,7 +110,11 @@ Remember to configure the ```IP address``` of the ```K8saudit webhook service```
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
 
-# K01 - Insecure Workload Configuration
+# Monitoring OWASP Specific Control Violations
+
+http://localhost:2802/events/?since=1h&filter=owasp
+
+## K01 - Insecure Workload Configuration
 
 Privileged Pod (K01.01)
 ```
