@@ -43,6 +43,8 @@ tar -xvf xmrig-6.16.4-linux-static-x64.tar.gz
 ```
 
 # Enable K8s Auditing
+Miscellaneous Instructions:
+https://github.com/jasonumiker-sysdig/kubernetes-security-demos/blob/cc2ebd3e56a2eac0a9a20668dfb91b30af0f9e00/setup-cluster/setup-microk8s.sh#L69
 ```
 mkdir /var/snap/microk8s/common/var/lib/k8s_audit
 ```
