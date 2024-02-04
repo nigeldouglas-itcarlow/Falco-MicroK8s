@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: dodgy-pod
+  name: privileged-pod
   namespace: default
   labels:
-    app: my-dodgy-app
-    environment: testing
+    app: my-privileged-pod
+    environment: microk8s
 spec:
   containers:
   - name: centos
@@ -20,7 +20,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: read-only-fs
+  name: read-only-fs-pod
 spec:
   containers:
   - name: centos
