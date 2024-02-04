@@ -141,3 +141,7 @@ chmod +x cleanup.sh
 ```
 ./cleanup.sh
 ```
+Forceful termination of pods in default namespace
+```
+kubectl delete pod <PODNAME> --grace-period=0 --force --namespace default
+```
