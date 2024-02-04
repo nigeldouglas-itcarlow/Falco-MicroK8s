@@ -131,6 +131,10 @@ Run as Root User (K01.03)
 kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/RunAsRoot.yaml
 ```
 
+![progress](https://github.com/nigeldouglas-itcarlow/Falco-MicroK8s/assets/126002808/25fd1d08-10aa-4030-a44a-a463b6b83069)
+
+
+
 ## Cleanup
 ```
 wget https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cleanup.sh
