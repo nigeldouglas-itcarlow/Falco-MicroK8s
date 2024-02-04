@@ -56,3 +56,16 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
+
+# Broken Authentication (K06)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-auth-config
+  namespace: kube-system
+data:
+  users: |
+    - name: myuser
+      user:
+        client-certificate-data: SGVsbG8gV29ybGQhCg==
+        client-key-data: V2h5IG5lZWQgdG8gYmUgc3RyaW5nIQo=
