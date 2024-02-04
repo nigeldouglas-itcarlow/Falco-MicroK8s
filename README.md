@@ -133,6 +133,12 @@ kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testi
 
 ![progress](https://github.com/nigeldouglas-itcarlow/Falco-MicroK8s/assets/126002808/25fd1d08-10aa-4030-a44a-a463b6b83069)
 
+## K03 - Overly Permissive RBAC
+
+Unnecessary use of ```cluster-admin``` (K03.01)
+```
+kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cluster-admin.yaml
+```
 
 
 ## Cleanup
