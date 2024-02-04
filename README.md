@@ -170,15 +170,12 @@ Providing a limited-scope rule to prevent the container escape scenario highligh
   tags: [OWASP_K8S_T10, K05, mitre_privilege_escalation, T1611]
 ```
 
-## Cleanup
+## Automate ALL Tests + Cleanup
 ```
-wget https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cleanup.sh
-```
-```
-chmod +x cleanup.sh
+kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/test-simulations.yaml
 ```
 ```
-./cleanup.sh
+kubectl delete -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/test-simulations.yaml
 ```
 Forceful termination of pods in default namespace
 ```
