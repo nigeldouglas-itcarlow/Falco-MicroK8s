@@ -8,5 +8,5 @@ spec:
     image: centos
     command: ['sh', '-c', 'sleep 999']
     securityContext:
-      # read-only fs explicitly defined
-      readOnlyRootFilesystem: false
+      #read-only fs explicitly defined
+      readOnlyRootFilesystem: true
