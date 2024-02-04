@@ -130,3 +130,14 @@ Run as Root User (K01.03)
 ```
 kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testing/main/RunAsRoot.yaml
 ```
+
+## Cleanup
+```
+wget https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cleanup.sh
+```
+```
+chmod +x cleanup.sh
+```
+```
+./cleanup.sh
+```
