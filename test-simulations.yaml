@@ -108,3 +108,25 @@ spec:
     imagePullPolicy: IfNotPresent
     securityContext:
       privileged: true
+---
+# Network Segmentation - Proposed Insecure Ingress without TLS certificate (K07.04)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secure-ingress
+spec:
+  tls:
+    - hosts:
+        - example.com  # Replace with your domain
+      secretName: tls-secret  # Replace with the name of your TLS secret
+  rules:
+    - host: example.com  # Replace with your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: your-service-name  # Replace with your backend service name
+                port:
+                  number: 80  # Replace with your service port number
