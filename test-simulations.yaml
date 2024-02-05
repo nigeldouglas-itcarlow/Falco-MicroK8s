@@ -130,3 +130,20 @@ spec:
                 name: your-service-name  # Replace with your backend service name
                 port:
                   number: 80  # Replace with your service port number
+---
+# Broken Authentication: Mounts of sensitive external host paths within pods (K06.04)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sensitive-mount-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    volumeMounts:
+    - name: host-root
+      mountPath: /host-root  # This path should be sensitive and restricted
+  volumes:
+  - name: host-root
+    hostPath:
+      path: /
