@@ -23,12 +23,18 @@ customRules:
       items:
         - "'52.21.188.179'"
         - "'54.237.103.220'"
+      override:
+        items: append
 
     - list: rfc_1918_addresses
       items: ['"10.0.0.0/8"', '"172.16.0.0/12"', '"192.168.0.0/16"']
+      override:
+        items: append
 
     - list: falco_containers
       items: ["docker.io/issif/falco-talon"]
+      override:
+        items: append
 
     - list: white_listed_modules
       items: []
@@ -36,13 +42,24 @@ customRules:
     # Disabling noisy Falco rules
     - rule: Drop and execute new binary in container
       enabled: false
+      override:
+        enabled: replace
 
     - rule: Change thread namespace
       enabled: false
+      override:
+        enabled: replace
 
     # Disabling rules with weak tagging
     - rule: Create Privileged Pod
       enabled: false
+      override:
+        enabled: replace
+
+    - rule: Clear Log Activities
+      enabled: false
+      override:
+        enabled: replace
 
     # Enabling rules with OWASP T10 Context
     - rule: Privileged Pod Created
@@ -53,6 +70,23 @@ customRules:
       source: k8s_audit
       tags: [OWASP_K8S_T10, K01, insecure_workload_config, K01.03]
 
+    - macro: containerd_activities
+      condition: (proc.name=containerd and (fd.name startswith "/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/" or
+                                            fd.name startswith "/var/lib/containerd/tmpmounts/"))
+
+    - rule: Log Activity Removed
+      desc: Detect clearing of critical access log files, typically done to erase evidence that could be attributed to an adversary actions.
+      condition: >
+        open_write
+        and access_log_files
+        and evt.arg.flags contains "O_TRUNC"
+        and not containerd_activities
+        and not trusted_logging_images
+        and not allowed_clear_log_files
+      output: Log files were tampered (file=%fd.name evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty %container.info)
+      priority: WARNING
+      tags: [OWASP_K8S_T10, K05, inadequate_logging, mitre_defense_evasion, T1070, NIST_800-53_AU-10]
+
     # https://github.com/falcosecurity/rules/blob/main/rules/falco-sandbox_rules.yaml#L1598,L1612
     - rule: Container Run as Root User
       desc: Container detected running as the root user. This should be taken into account especially when policies disallow containers from running with root user privileges.
@@ -62,11 +96,46 @@ customRules:
       priority: INFO
       tags: [OWASP_K8S_T10, K01, insecure_workload_config, K01.01]
 
-    # https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/
-    #- rule: Pod created without resource limits
-    #  desc: Detect pod created without defined CPU or memory limits
-    # condition: kevt and pod and kcreate and ka.req.pod.containers.resources.limits.cpu != exists
-    # output: Pod started without CPU or memory limits (user=%ka.user.name pod=%ka.resp.name resource=%ka.target.resource ns=%ka.target.namespace images=%ka.req.pod.containers.image)
-    # priority: WARNING
-    # source: k8s_audit
-    # tags: [OWASP_K8s_T10, K01, insecure_workload_config, K01.04, proposed_control]
+    - rule: Pod created without read-only file system
+      desc: Detect a pod created without a read-only file system
+      condition: kevt and pod and kcreate and ka.req.pod.containers.read_only_fs intersects (true)
+      output: Pod started without a read-only file system (user=%ka.user.name pod=%ka.resp.name resource=%ka.target.resource ns=%ka.target.namespace images=%ka.req.pod.containers.image)
+      priority: INFO
+      source: k8s_audit
+      tags: [OWASP_K8S_T10, K01, insecure_workload_config, K01.02]
+
+    # https://owasp.org/www-project-kubernetes-top-ten/2022/en/src/K04-policy-enforcement
+    - rule: Nsenter Launched in Privileged Container
+      desc: Detect file system debugger nsenter launched inside a privileged container which might lead to container escape. This rule has a more narrow scope.
+      condition: >
+        spawned_process
+        and container
+        and container.privileged=true
+        and proc.name=nsenter
+      output: Nsenter launched started in a privileged container (evt_type=%evt.type user=%user.name user_uid=%user.uid user_loginuid=%user.loginuid process=%proc.name proc_exepath=%proc.exepath parent=%proc.pname command=%proc.cmdline terminal=%proc.tty exe_flags=%evt.arg.flags %container.info)
+      priority: WARNING
+      tags: [OWASP_K8S_T10, K04, central_policy_enforcement, K04.01, mitre_privilege_escalation, T1611]
+
+    - rule: Attach to cluster-admin Role
+      source: k8s_audit
+      tags: [k8s, OWASP_K8S_T10, K03, overly_permissive_rbac, K03.01]
+      override:
+        tags: replace
+
+    - rule: Ingress Object without TLS Certificate Created
+      source: k8s_audit
+      tags: [k8s, network, OWASP_K8S_T10, K06, broken_authentication, K06.04]
+      override:
+        tags: replace
+
+    - rule: Create Sensitive Mount Pod
+      source: k8s_audit
+      tags: [k8s, OWASP_K8S_T10, K01, insecure_workload_config, K01.05]
+      override:
+        tags: replace
+
+    - rule: Log Activity Removed
+      source:
+      tags: [OWASP_K8S_T10, K05, inadequate_logging, K05.01, mitre_defense_evasion, T1070, NIST_800-53_AU-10]
+      override:
+        tags: replace
