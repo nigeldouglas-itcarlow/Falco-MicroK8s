@@ -140,6 +140,12 @@ Unnecessary use of ```cluster-admin``` (K03.01)
 kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cluster-admin.yaml
 ```
 
+## K05: Inadequate Logging
+Detect the clearing of critical access log files, typically done to erase evidence that could be attributed to an adversary's actions. To effectively customize and operationalize this detection, check for potentially missing log file destinations relevant to your environment, and adjust the profiled containers you wish not to be alerted on.
+```
+kubectl run clear-log-container --image=alpine --restart=Never --rm -it -- /bin/sh -c 'echo "Tampering with log file" > /var/log/access.log; cat /dev/null > /var/log/access.log'
+```
+
 ## K04 - Lack of Centralized Policy Enforcement
 
 The following command if run against the Kubernetes API will create a very special pod that is running a highly privileged container.
@@ -156,6 +162,7 @@ The following command if run against the Kubernetes API will create a very speci
   "securityContext":{"privileged":true}}]}}' \
 /
 ```
+
 Providing a limited-scope rule to prevent the container escape scenario highlighted above:
 ```
 - rule: Nsenter Launched in Privileged Container
