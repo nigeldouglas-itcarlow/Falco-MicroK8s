@@ -190,6 +190,19 @@ Providing a limited-scope rule to prevent the container escape scenario highligh
   tags: [OWASP_K8S_T10, K05, mitre_privilege_escalation, T1611]
 ```
 
+## K09: Misconfigured Cluster Components
+```
+kubelet --anonymous-auth=false --authorization-mode=Webhook --config=/etc/kubernetes/kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf
+```
+Here is the output proving that anonymous authorization mode is now deprecated in the latest versions of Kubernetes: <br/>
+https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/#options
+```
+Flag --anonymous-auth has been deprecated, This parameter should be set via the config file specified by the Kubelet's --config flag. See https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/ for more information.
+Flag --authorization-mode has been deprecated, This parameter should be set via the config file specified by the Kubelet's --config flag. See https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/ for more information.
+E0212 12:01:54.234414 2684977 run.go:74] "command failed" err="failed to load kubelet config file, path: /etc/kubernetes/kubelet.conf, error: failed to load Kubelet config file /etc/kubernetes/kubelet.conf, error failed to read kubelet config file \"/etc/kubernetes/kubelet.conf\", error: open /etc/kubernetes/kubelet.conf: no such file or directory"
+```
+
+
 ## Automate ALL Tests + Cleanup
 ```
 kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/test-simulations.yaml
