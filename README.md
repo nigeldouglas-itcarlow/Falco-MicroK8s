@@ -9,6 +9,12 @@ The addon can be disabled at any time with:
 ```
 microk8s disable falco
 ```
+
+Change the alias for ```microk8s kubectl get pods -A``` to just ```kubectl get pods -A``` 
+```
+echo 'alias kubectl="microk8s kubectl"' >> ~/.bashrc
+source ~/.bashrc
+```
 Accessing the FalcoSideKick user interface
 ```
 kubectl port-forward svc/falco-falcosidekick-ui -n falco 2802 --insecure-skip-tls-verify
