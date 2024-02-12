@@ -147,3 +147,14 @@ spec:
   - name: host-root
     hostPath:
       path: /
+---
+# K08: Secrets Management Failures (since the ConfigMap contains sensitive credentials like a Secret)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: private-credentials
+data:
+  aws_access_key_id: YOUR_AWS_ACCESS_KEY_ID
+  aws_secret_access_key: YOUR_AWS_SECRET_ACCESS_KEY
+  password: YOUR_PASSWORD
+
