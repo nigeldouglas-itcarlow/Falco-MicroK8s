@@ -140,6 +140,19 @@ Unnecessary use of ```cluster-admin``` (K03.01)
 kubectl apply -f https://raw.githubusercontent.com/nigeldouglas-itcarlow/Falco-MicroK8s/main/cluster-admin.yaml
 ```
 
+## K08 - Secrets Management
+
+The rule works, but currently on responds to list actiity on a specific file directory.
+
+```
+- rule: List Service Account Secrets
+  desc: Detects listing of service account secrets.
+  condition: proc.name contains ls and proc.cmdline contains /var/run/secrets/kubernetes.io/serviceaccount
+  output: List command detected for listing service account secrets (user=%user.name shell=%proc.name cmdline=%proc.cmdline)
+  priority: NOTICE
+  tags: [OWASP_K8S_R10, K08, secrets_management]
+```
+
 ## K05: Inadequate Logging
 Detect the clearing of critical access log files, typically done to erase evidence that could be attributed to an adversary's actions. To effectively customize and operationalize this detection, check for potentially missing log file destinations relevant to your environment, and adjust the profiled containers you wish not to be alerted on.
 ```
