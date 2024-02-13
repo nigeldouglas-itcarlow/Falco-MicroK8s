@@ -108,9 +108,9 @@ helm upgrade falco falcosecurity/falco --namespace falco \
   -f custom-rules.yaml
 ```
 
-- K8sAudit ENABLED
+- K8sAudit ```ENABLED``` from same directory as ```custom-rules.yaml``` with forwarding set ```to Talon from Sidekick```.
 ```
-helm upgrade falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443 --set tty=true -f custom-rules.yaml
+helm upgrade falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443 --set tty=true --set falcosidekick.config.webhook.address=http://falco-talon:2803 -f custom-rules.yaml
 ```
 
 Remember to configure the ```IP address``` of the ```K8saudit webhook service``` in the ```webhook-config.yaml``` file:
