@@ -122,6 +122,12 @@ Scale-down ```falco-talon``` deployment to a single pod for better log analysis
 ```
 kubectl scale deployment -n falco --replicas=1 falco-talon
 ```
+
+Check ```logs``` for the response engine:
+```
+kubectl logs -n falco -l app.kubernetes.io/name=falco-talon
+```
+
 # Monitoring OWASP Specific Control Violations
 
 http://localhost:2802/events/?since=1h&filter=owasp
