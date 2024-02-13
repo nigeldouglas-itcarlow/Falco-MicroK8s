@@ -1,4 +1,4 @@
-# Falco-MicroK8s
+# Running Falco on Microk8s for testing OWASP T10 controls
 Setting up Falco's Kubernetes Audit plugin for MicroK8s
 
 To enable the addon:
