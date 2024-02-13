@@ -118,6 +118,10 @@ Remember to configure the ```IP address``` of the ```K8saudit webhook service```
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
 
+Scale-down ```falco-talon``` deployment to a single pod for better log analysis
+```
+kubectl scale deployment -n falco --replicas=1 falco-talon
+```
 # Monitoring OWASP Specific Control Violations
 
 http://localhost:2802/events/?since=1h&filter=owasp
