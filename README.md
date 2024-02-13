@@ -43,6 +43,11 @@ Enforce traffic control on ```Outbound Connection to C2 Servers```
 ```
 curl 52.21.188.179
 ```
+
+Confirm the pod was terminate by the Talon response engine:
+```
+kubectl events -n default dodgy-pod -w
+```
 In a separate tab, watch the response action play out
 ```
 kubectl logs -n falco -l app.kubernetes.io/name=falco-talon
