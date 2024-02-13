@@ -38,6 +38,16 @@ kubectl apply -f https://raw.githubusercontent.com/nigel-falco/falco-talon-testi
 ```
 kubectl exec -it dodgy-pod -- bash
 ```
+
+Enforce traffic control on ```Outbound Connection to C2 Servers```
+```
+curl 52.21.188.179
+```
+In a separate tab, watch the response action play out
+```
+kubectl logs -n falco -l app.kubernetes.io/name=falco-talon
+```
+
 ```
 curl -OL https://github.com/xmrig/xmrig/releases/download/v6.16.4/xmrig-6.16.4-linux-static-x64.tar.gz
 ```
@@ -128,6 +138,10 @@ Check ```logs``` for the response engine:
 kubectl logs -n falco -l app.kubernetes.io/name=falco-talon
 ```
 
+Upgrade the Falco Talon response engine:#
+```
+helm upgrade falco-talon . -n falco
+```
 # Monitoring OWASP Specific Control Violations
 
 http://localhost:2802/events/?since=1h&filter=owasp
