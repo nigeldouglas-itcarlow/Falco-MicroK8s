@@ -140,7 +140,7 @@ kubectl scale deployment -n falco --replicas=1 falco-talon
 
 Check ```logs``` for the response engine:
 ```
-kubectl logs -n falco -l app.kubernetes.io/name=falco-talon
+kubectl logs -n falco -l app.kubernetes.io/name=falco-talon | grep kubernetes:terminate
 ```
 
 Upgrade the Falco Talon response engine:#
