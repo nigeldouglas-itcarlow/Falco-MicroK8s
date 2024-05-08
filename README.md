@@ -1,4 +1,4 @@
-# Running Falco on Microk8s for testing OWASP T10 controls
+# Running Falco on Microk8s for testing OWASP Top 10 controls
 
 I was working on this lab in two different Github repositories due  to the change from @itcarlow.ie to @setu.ie email accounts:
 https://github.com/nigel-falco/falco-talon-testing
