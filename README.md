@@ -146,6 +146,11 @@ Then enter this in the ```webhook-config.yaml``` file to ensure if connects to t
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
 
+Troubleshoot if something is going wrong inside Falco with the K8s audit plugin:
+```
+kubectl logs -l app.kubernetes.io/name=falco -n falco
+```
+
 Scale-down ```falco-talon``` deployment to a single pod for better log analysis
 ```
 kubectl scale deployment -n falco --replicas=1 falco-talon
