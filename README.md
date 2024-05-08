@@ -1,4 +1,8 @@
 # Running Falco on Microk8s for testing OWASP T10 controls
+
+I was working on this lab in two different Github repositories due  to the change from @itcarlow.ie to @setu.ie email accounts:
+https://github.com/nigel-falco/falco-talon-testing
+
 Setting up Falco's Kubernetes Audit plugin for MicroK8s
 
 To enable the addon:
