@@ -137,7 +137,11 @@ helm upgrade falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apis
 ![install falco](https://github.com/nigeldouglas-itcarlow/Falco-MicroK8s/assets/152274017/85938b6e-e84d-460c-817f-81fcb33337aa)
 
 
-Remember to configure the ```IP address``` of the ```K8saudit webhook service``` in the ```webhook-config.yaml``` file:
+Remember to configure the ```IP address``` of the ```K8saudit webhook service``` :
+```
+kubectl get svc -A | grep falco-k8saudit-webhook
+```
+Then enter this in the ```webhook-config.yaml``` file to ensure if connects to the audit log service:
 ```
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
 ```
