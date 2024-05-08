@@ -72,7 +72,7 @@ customRules:
 
     - macro: containerd_activities
       condition: (proc.name=containerd and (fd.name startswith "/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/" or
-                                            fd.name startswith "/var/lib/containerd/tmpmounts/"))
+                                            fd.name startswith "/var/lib/containerd/tmpmounts/"))                       
 
     - rule: Log Activity Removed
       desc: Detect clearing of critical access log files, typically done to erase evidence that could be attributed to an adversary actions.
@@ -139,3 +139,10 @@ customRules:
       tags: [OWASP_K8S_T10, K05, inadequate_logging, K05.01, mitre_defense_evasion, T1070, NIST_800-53_AU-10]
       override:
         tags: replace
+
+    - rule: List Service Account Secrets
+      desc: Detects listing of service account secrets.
+      condition: proc.name contains ls and proc.cmdline contains /var/run/secrets/kubernetes.io/serviceaccount
+      output: List command detected for listing service account secrets (user=%user.name shell=%proc.name cmdline=%proc.cmdline)
+      priority: NOTICE
+      tags: [OWASP_K8S_R10, K08, secrets_management]
