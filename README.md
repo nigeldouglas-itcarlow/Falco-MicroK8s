@@ -134,6 +134,9 @@ helm upgrade falco falcosecurity/falco --namespace falco \
 helm upgrade falco falcosecurity/falco -n falco -f falco-values.yaml --kube-apiserver https://127.0.0.1:16443 --set tty=true --set falcosidekick.config.webhook.address=http://falco-talon:2803 -f custom-rules.yaml
 ```
 
+![install falco](https://github.com/nigeldouglas-itcarlow/Falco-MicroK8s/assets/152274017/85938b6e-e84d-460c-817f-81fcb33337aa)
+
+
 Remember to configure the ```IP address``` of the ```K8saudit webhook service``` in the ```webhook-config.yaml``` file:
 ```
 sudo vi /var/snap/microk8s/common/var/lib/k8s_audit/webhook-config.yaml
